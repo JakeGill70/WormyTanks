@@ -141,36 +141,34 @@ function GameMap(width, height) {
 
     this.growMap = function(chanceOfGrowth){
         this.mapData.loadPixels(); // Initialize pixel array
-        let reds = {} // Dictionary mapping indices in pixel array to byte-sized values
+        let reds = [] // Dictionary mapping indices in pixel array to byte-sized values
     
         // Determine which pixels should flip to be red 
         // and which should be black.
-        for (let i = 0; i < this.mapData.pixels.length; i+=4) {
-            // If the red channel of this pixel is on
-            if(this.mapData.pixels[i] == 255){
-                reds[i] = 255; // Keep it on
-    
-                // Random chance to flip neighbors to red
-                if(random(100) < chanceOfGrowth){
-                    // Add each neighbor to the list of neighbors to turn red
-                    neighbors = this.getIndex.neighbors(i);
-                    neighbors.forEach(neighborIndex => {
-                        reds[neighborIndex] = 255;
-                    });
+        for(let x = 0; x < this.width; x++){
+            for (let y = 0; y < this.height; y++) {
+                let redValueAtXY = this.getPixelValue(x,y).levels[0]
+                if(redValueAtXY == 255){
+                    reds.push({"x":x,"y":y})// Keep it on
+
+                    // Random chance to flip neighbors to red
+                    if(random(100) < chanceOfGrowth){
+                        // Add each neighbor to the list of neighbors to turn red
+                        neighbors = this.getNeighbors(x, y);
+                        neighbors.forEach(neighbor => {
+                            reds.push(neighbor)
+                        });
+                    }
                 }
-                
             }
         }
-    
+
         // Flip pixels as needed
-        for (let i = 0; i < this.mapData.pixels.length; i+=4) {
-            // If the red channel of this pixel is on
-            if(reds[i] == 255){
-                this.mapData.pixels[i] = 255;
-            }
-            else{
-                this.mapData.pixels[i] = 0;
-            }
+        for (let i = 0; i < reds.length; i++) {
+            let c = color(255,0,0,255);
+            let x = reds[i].x;
+            let y = reds[i].y;
+            this.setPixelValue(x,y,c);
         }
     
         this.mapData.updatePixels();
