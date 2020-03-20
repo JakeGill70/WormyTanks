@@ -130,7 +130,8 @@ function GameMap(width, height) {
                 pos.y = y+fy;
 
                 if(pos.x < 0 || pos.x > this.width || pos.y < 0 || pos.y > this.height){ 
-                    continue;
+                    pos.x = -1;
+                    pos.y = -1;
                 }
 
                 neighbors.push(pos);
@@ -156,7 +157,9 @@ function GameMap(width, height) {
                         // Add each neighbor to the list of neighbors to turn red
                         neighbors = this.getNeighbors(x, y);
                         neighbors.forEach(neighbor => {
-                            reds.push(neighbor)
+                            if(neighbor.x != -1 && neighbor.y != -1){
+                                reds.push(neighbor)
+                            }
                         });
                     }
                 }
