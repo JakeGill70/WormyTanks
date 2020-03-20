@@ -119,17 +119,17 @@ function GameMap(width, height) {
         this.mapData.updatePixels();
     };
 
-    this.getNeighbors = function(x,y,size=1,includeCenter=true){
+    this.getNeighbors = function(x,y,size=1,includeCenter=false){
         var neighbors = [];
-        for (let fx = -size; fx < size; fx++) {
-            for (let fy = -size; fy < size; fy++) {
-                if(!includeCenter && fx==x && fy==y){ continue; }
+        for (let fx = -size; fx <= size; fx++) {
+            for (let fy = -size; fy <= size; fy++) {
+                if(!includeCenter && fx==0 && fy==0){ continue; }
 
                 let pos = {};
                 pos.x = x+fx;
                 pos.y = y+fy;
 
-                if(pos.x < 0 || pos.x > this.width || pos.y < 0 || pos.y > this.height){ 
+                if(pos.x < 0 || pos.x >= this.width || pos.y < 0 || pos.y >= this.height){ 
                     pos.x = -1;
                     pos.y = -1;
                 }
