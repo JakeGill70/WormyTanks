@@ -164,14 +164,18 @@ function GameMap(width, height) {
         }
 
         // Flip pixels as needed
-        for (let i = 0; i < reds.length; i++) {
-            let c = color(255,0,0,255);
-            let x = reds[i].x;
-            let y = reds[i].y;
-            this.setPixelValue(x,y,c);
-        }
+        let red = color(255,0,0,255);
+        this.setPixelsToColor(reds, red);
     
         this.mapData.updatePixels();
+    };
+
+    this.setPixelsToColor = function(pixels, c){
+        for (let i = 0; i < pixels.length; i++) {
+            let x = pixels[i].x;
+            let y = pixels[i].y;
+            this.setPixelValue(x,y,c);
+        }
     };
 
     this.cleanMap = function(redNeighborsNeededToStayRed){
