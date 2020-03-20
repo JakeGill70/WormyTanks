@@ -119,6 +119,26 @@ function GameMap(width, height) {
         this.mapData.updatePixels();
     };
 
+    this.getNeighbors = function(x,y,size=1,includeCenter=true){
+        var neighbors = [];
+        for (let fx = -size; fx < size; fx++) {
+            for (let fy = -size; fy < size; fy++) {
+                if(!includeCenter && fx==x && fy==y){ continue; }
+
+                let pos = {};
+                pos.x = x+fx;
+                pos.y = y+fy;
+
+                if(pos.x < 0 || pos.x > this.width || pos.y < 0 || pos.y > this.height){ 
+                    continue;
+                }
+
+                neighbors.push(pos);
+            }
+        }
+        return neighbors;
+    }
+
     this.growMap = function(chanceOfGrowth){
         this.mapData.loadPixels(); // Initialize pixel array
         let reds = {} // Dictionary mapping indices in pixel array to byte-sized values
