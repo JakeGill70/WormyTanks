@@ -230,12 +230,20 @@ function GameMap(width, height) {
 
     this.getPixelValue = function(x,y){
         var index = this.getPixelIndex(x, y);
-        var pixelValue = {};
-        pixelValue.red = this.mapData.pixels[index];
-        pixelValue.green = this.mapData.pixels[index+1];
-        pixelValue.blue = this.mapData.pixels[index+2];
-        pixelValue.yellow = this.mapData.pixels[index+3];
-        return pixelValue;
+        var red = this.mapData.pixels[index];
+        var green = this.mapData.pixels[index+1];
+        var blue = this.mapData.pixels[index+2];
+        var alpha = this.mapData.pixels[index+3];
+        var c = color(red, green, blue, alpha)
+        return c;
+    }
+
+    this.setPixelValue = function(x,y,c){
+        var index = this.getPixelIndex(x, y);
+        this.mapData.pixels[index] = c[0] // Red
+        this.mapData.pixels[index+1] = c[1] // Green
+        this.mapData.pixels[index+2] = c[2] // Blue
+        this.mapData.pixels[index+3] = c[3] // Alpha
     }
 }
 
