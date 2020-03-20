@@ -137,11 +137,11 @@ function GameMap(width, height) {
             }
         }
         return neighbors;
-    }
+    };
 
     this.growMap = function(chanceOfGrowth){
         this.mapData.loadPixels(); // Initialize pixel array
-        let reds = [] // Dictionary mapping indices in pixel array to byte-sized values
+        let reds = [] // List of (x,y) coords of pixels that should be turned red
     
         // Determine which pixels should flip to be red 
         // and which should be black.
@@ -240,11 +240,11 @@ function GameMap(width, height) {
         this.growMap(chanceOfGrowth);
 
         console.log("The map has been successfully processed.")
-    }
+    };
 
     this.getPixelIndex = function(x,y){
         return ((this.width * y + x) * this.CHANNEL_COUNT);
-    }
+    };
 
     this.getPixelValue = function(x,y){
         let index = this.getPixelIndex(x, y);
@@ -254,7 +254,7 @@ function GameMap(width, height) {
         let alpha = this.mapData.pixels[index+3];
         let c = color(red, green, blue, alpha)
         return c;
-    }
+    };
 
     this.setPixelValue = function(x,y,c){
         let index = this.getPixelIndex(x, y);
@@ -262,7 +262,7 @@ function GameMap(width, height) {
         this.mapData.pixels[index+1] = c.levels[1] // Green
         this.mapData.pixels[index+2] = c.levels[2] // Blue
         this.mapData.pixels[index+3] = c.levels[3] // Alpha
-    }
+    };
 
     this.setSquare = function(x,y,w,h,c){
         for (let fx = 0; fx < w; fx++) {
@@ -270,7 +270,7 @@ function GameMap(width, height) {
                 this.setPixelValue(x+fx,y+fy,c);
             }
         }
-    }
+    };
 }
 
 var Game = {
