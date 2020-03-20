@@ -184,47 +184,50 @@ function GameMap(width, height) {
     this.cleanMap = function(redNeighborsNeededToStayRed){
     
         this.mapData.loadPixels(); // Initialize pixel array
-        var reds = {} // Dictionary mapping indices in pixel array to byte-sized values
+        let reds = [] // List of (x,y) coords of pixels that should be turned red
+        let clears = [] // List of (x,y) coords of pixels that should be made transparent
+
+        let redNeighborsList = [];
+
 
         // Determine which pixels should flip to be red 
-        // and which should be black.
-        for (let i = 0; i < this.mapData.pixels.length; i+=4) {
+        // and which should be clear.
+        for(let x = 0; x < this.width; x++){
+            for (let y = 0; y < this.height; y++) {
+                let redNeighbors = 0;
+                let neighbors = this.getNeighbors(x,y);
 
-            let redNeighbors = 0; // Count of neighbors that are red
-            let neighbors = this.getIndex.neighbors(i); // Get indices of neighbors
+                neighbors.forEach(neighborPosition => {
+                    // If that neighbor does not exists
+                    if(neighborPosition.x == -1 && neighborPosition.y == -1){
+                        redNeighbors += 0.5; // Adding 0, or 1 makes for some weird results.
+                                            // Experimentation led to 0.5
+                    }
+                    else{
+                        let neighborColor = this.getPixelValue(neighborPosition.x, neighborPosition.y);
+                        let neighborColorRedChannel = neighborColor.levels[0];
+                        if(neighborColorRedChannel == 255){
+                            redNeighbors += 1.0;
+                        }
+                    }
+                });
 
-            // Foreach neighboring index
-            neighbors.forEach(neighboringPixel => {
-                // If that neighbor exists
-                if(neighboringPixel == -1){
-                    redNeighbors += 0.5; // Adding 0, or 1 makes for some weird results.
-                                            // Experimentation led to 0.
+                redNeighborsList.push(redNeighbors);
+                // If the pixel has enough red neighbors
+                if(redNeighbors >= redNeighborsNeededToStayRed){
+                    reds.push({"x":x,"y":y});
                 }
-                // If that neighbor is red
-                else if(this.mapData.pixels[neighboringPixel] == 255){
-                    redNeighbors += 1;
+                else{
+                    clears.push({"x":x,"y":y});
                 }
-            });
-
-            // If the pixel has enough red neighbors
-            if(redNeighbors >= redNeighborsNeededToStayRed){
-                reds[i] = 255; // Set red channel of pixel to 255
-            }
-            else{
-                reds[i] = 0; // Set red channel of pixel to 0
             }
         }
     
         // Flip pixels as needed
-        for (let i = 0; i < this.mapData.pixels.length; i+=4) {
-            // If the red channel of this pixel is on
-            if(reds[i] == 255){
-                this.mapData.pixels[i] = 255;
-            }
-            else{
-                this.mapData.pixels[i] = 0;
-            }
-        }
+        let red = color(255,0,0,255);
+        let clear = color(0,0,0,0);
+        this.setPixelsToColor(reds, red);
+        this.setPixelsToColor(clears, clear);
     
         this.mapData.updatePixels();
     };
