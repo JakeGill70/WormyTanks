@@ -1,3 +1,10 @@
+function SimpleColor(red, green, blue, alpha){
+    this.red = red;
+    this.green = green;
+    this.blue = blue;
+    this.alpha = alpha;
+}
+
 function GameMap(width, height) {
     this.CHANNEL_COUNT = 4; // Number of channels (colors) in mapData
     this.mapData = {}; // Actual map data stored as a bitmap
@@ -148,7 +155,7 @@ function GameMap(width, height) {
         // and which should be black.
         for(let x = 0; x < this.width; x++){
             for (let y = 0; y < this.height; y++) {
-                let redValueAtXY = this.getPixelValue(x,y).levels[0]
+                let redValueAtXY = this.getPixelValue(x,y).red;
                 if(redValueAtXY == 255){
                     reds.push({"x":x,"y":y})// Keep it on
 
@@ -167,7 +174,7 @@ function GameMap(width, height) {
         }
 
         // Flip pixels as needed
-        let red = color(255,0,0,255);
+        let red = new SimpleColor(255,0,0,255);
         this.setPixelsToColor(reds, red);
     
         this.mapData.updatePixels();
@@ -205,8 +212,7 @@ function GameMap(width, height) {
                     }
                     else{
                         let neighborColor = this.getPixelValue(neighborPosition.x, neighborPosition.y);
-                        let neighborColorRedChannel = neighborColor.levels[0];
-                        if(neighborColorRedChannel == 255){
+                        if(neighborColor.red == 255){
                             redNeighbors += 1.0;
                         }
                     }
@@ -224,8 +230,8 @@ function GameMap(width, height) {
         }
     
         // Flip pixels as needed
-        let red = color(255,0,0,255);
-        let clear = color(0,0,0,0);
+        let red = new SimpleColor(255,0,0,255);
+        let clear = new SimpleColor(0,0,0,0);
         this.setPixelsToColor(reds, red);
         this.setPixelsToColor(clears, clear);
     
@@ -262,16 +268,16 @@ function GameMap(width, height) {
         let green = this.mapData.pixels[index+1];
         let blue = this.mapData.pixels[index+2];
         let alpha = this.mapData.pixels[index+3];
-        let c = color(red, green, blue, alpha)
+        let c = new SimpleColor(red, green, blue, alpha)
         return c;
     };
 
     this.setPixelValue = function(x,y,c){
         let index = this.getPixelIndex(x, y);
-        this.mapData.pixels[index] = c.levels[0] // Red
-        this.mapData.pixels[index+1] = c.levels[1] // Green
-        this.mapData.pixels[index+2] = c.levels[2] // Blue
-        this.mapData.pixels[index+3] = c.levels[3] // Alpha
+        this.mapData.pixels[index] = c.red; // Red
+        this.mapData.pixels[index+1] = c.green; // Green
+        this.mapData.pixels[index+2] = c.blue; // Blue
+        this.mapData.pixels[index+3] = c.alpha; // Alpha
     };
 
     this.setSquare = function(x,y,w,h,c){
@@ -300,7 +306,7 @@ function setup() {
     createCanvas(Game.width, Game.height);
 
     Game.level.map.createMap();
-    //Game.level.map.processMap();
+    Game.level.map.processMap();
 
     //Game.level.map.mapData.resize(Game.level.map.width*2, Game.level.map.height*2)
 }
