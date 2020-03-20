@@ -246,6 +246,12 @@ function GameMap(width, height) {
         this.mapData.pixels[index+3] = c.levels[3] // Alpha
     }
 
+    this.setSquare = function(x,y,w,h,c){
+        for (let fx = 0; fx < w; fx++) {
+            for (let fy = 0; fy < h; fy++) {
+                this.setPixelValue(x+fx,y+fy,c);
+            }
+        }
     }
 }
 
