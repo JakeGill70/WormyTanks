@@ -188,6 +188,24 @@ function GameMap(width, height) {
         }
     };
 
+    this.countRedNeighbors = function(neighborPositions){
+        let redNeighbors = 0;
+        for (let i = 0; i < neighborPositions.length; i++) {
+            const neighborPosition = neighborPositions[i];
+            if(neighborPosition.x == -1 && neighborPosition.y == -1){
+                redNeighbors += 0.5; // Adding 0, or 1 makes for some weird results.
+                                    // Experimentation led to 0.5
+            }
+            else{
+                let neighborColor = this.getPixelValue(neighborPosition.x, neighborPosition.y);
+                if(neighborColor.red == 255){
+                    redNeighbors += 1.0;
+                }
+            }
+        }
+        return redNeighbors;
+    }
+
     this.cleanMap = function(redNeighborsNeededToStayRed){
     
         this.mapData.loadPixels(); // Initialize pixel array
@@ -196,7 +214,6 @@ function GameMap(width, height) {
 
         let redNeighborsList = [];
 
-
         // Determine which pixels should flip to be red 
         // and which should be clear.
         for(let x = 0; x < this.width; x++){
@@ -204,19 +221,7 @@ function GameMap(width, height) {
                 let redNeighbors = 0;
                 let neighbors = this.getNeighbors(x,y);
 
-                neighbors.forEach(neighborPosition => {
-                    // If that neighbor does not exists
-                    if(neighborPosition.x == -1 && neighborPosition.y == -1){
-                        redNeighbors += 0.5; // Adding 0, or 1 makes for some weird results.
-                                            // Experimentation led to 0.5
-                    }
-                    else{
-                        let neighborColor = this.getPixelValue(neighborPosition.x, neighborPosition.y);
-                        if(neighborColor.red == 255){
-                            redNeighbors += 1.0;
-                        }
-                    }
-                });
+                redNeighbors = this.countRedNeighbors(neighbors);
 
                 redNeighborsList.push(redNeighbors);
                 // If the pixel has enough red neighbors
